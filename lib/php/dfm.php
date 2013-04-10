@@ -5,6 +5,7 @@
 
 global $__dfm;
 $__dfm=array(
+	'hooks'=>array(),
 	'log_hook'=>null,
 );
 
@@ -20,10 +21,20 @@ class dfm
 		$obj = new dfm();
 		return $obj;
 	}
+
+	function log($string_to_log)
+	{
+		global $__dfm;
+		if(!is_null($__dfm['log_hook']))
+		{
+			$__dfm['log_hook']('DFM: '.$string_to_log);
+		}
+	}
 	
 	public function __call($action,$params)
 	{
 		array_unshift($params,$action);
+		dfm::log('added format function: '.$action);
 		$this->actions[] = $params;
 		return $this;
 	}
@@ -32,10 +43,10 @@ class dfm
 	{
 		global $__dfm;
 		$out = $in;
-		#print_r($this->actions);
+		dfm::log('Formatter started on '.$in);
 		foreach($this->actions as $action)
 		{
-			#echo("testing: ".$action[0]."\n");
+			dfm::log('applying '.$action[0].' to '.$out);
 			switch($action[0])
 			{
 				case 'ifnull':
@@ -61,6 +72,16 @@ class dfm
 					break;
 				case 'epoch':
 					$out = date($action[1],$out);
+					break;
+				default:
+					if(isset($__dfm[$action[1]]))
+					{
+						$out = $__dfm[$action[1]]($out);
+					}
+					else
+					{
+						throw new Exception('DFM: Could not find format function '.$action[1]);
+					}
 					break;
 			}
 		}

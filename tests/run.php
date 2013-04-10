@@ -3,6 +3,7 @@
 # Use of this source code is governed by a BSD-style
 # license that can be found in the LICENSE file.
 
+global $__dfm;
 include_once(__DIR__.'/../lib/php/dfm.php');
 
 global $output_path;
@@ -20,6 +21,12 @@ foreach($files as $file)
 		unlink($file); 
 }
 
+
+function mylogger($string)
+{
+	echo($string."\n");
+}
+#$__dfm['log_hook'] = 'mylogger';
 
 $fail_count = 0;
 echo('Beginning test run'.$nl.' '.$nl);
