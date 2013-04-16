@@ -11,6 +11,23 @@ $__dfm=array(
 
 class dfm
 {
+	function init($config = array())
+	{
+		global $__dfm;
+		foreach($config as $key=>$value)
+		{
+			if(is_array($value))
+			{
+				foreach($value as $subkey=>$subvalue)
+				{
+					$__dfm[$key][$subkey] = $subvalue;
+				}
+			}
+			else
+				$__dfm[$key] = $value;
+		}	
+	}
+	
 	function __construct()
 	{
 		$this->actions = array();
