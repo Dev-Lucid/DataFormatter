@@ -6,11 +6,27 @@
 global $__dfm;
 $__dfm=array(
 	'hooks'=>array(),
-	'log_hook'=>null,
 );
 
 class dfm
 {
+	function call_hook($hook,$p0=null,$p1=null,$p2=null,$p3=null,$p4=null,$p5=null,$p6=null)
+	{
+		global $__dfm;
+		if(isset($__dfm['hooks'][$hook]))
+			$__dfm['hooks'][$hook]($p0,$p1,$p2,$p3,$p4,$p5,$p6);
+	}
+	
+	function log($to_write)
+	{
+		global $__dfm;		
+		if(isset($__dfm['hooks']['log']))
+		{
+			$to_write=(is_object($to_write) || is_array($to_write))?print_r($to_write,true):$to_write;
+			$__dfm['hooks']['log']('DFM: '.$to_write);
+		}
+	}
+	
 	function init($config = array())
 	{
 		global $__dfm;
@@ -20,12 +36,20 @@ class dfm
 			{
 				foreach($value as $subkey=>$subvalue)
 				{
-					$__dfm[$key][$subkey] = $subvalue;
+					if(is_numeric($subkey))
+						$__dfm[$key][] = $subvalue;
+					else
+						$__dfm[$key][$subkey] = $subvalue;
 				}
+
 			}
 			else
 				$__dfm[$key] = $value;
 		}	
+	}
+		
+	public static function deinit()
+	{
 	}
 	
 	function __construct()
@@ -39,15 +63,6 @@ class dfm
 		return $obj;
 	}
 
-	function log($string_to_log)
-	{
-		global $__dfm;
-		if(!is_null($__dfm['log_hook']))
-		{
-			$__dfm['log_hook']('DFM: '.$string_to_log);
-		}
-	}
-	
 	public function __call($action,$params)
 	{
 		array_unshift($params,$action);
