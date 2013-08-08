@@ -62,6 +62,12 @@ class dfm
 		$obj = new dfm();
 		return $obj;
 	}
+	
+	public static function __callStatic($action,$params)
+	{
+		$new = dfm::construct()->$action($params[0],$params[1],$params[2],$params[3]);
+		return $new;
+	}
 
 	public function __call($action,$params)
 	{
