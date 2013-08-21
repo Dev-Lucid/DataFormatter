@@ -77,7 +77,7 @@ class dfm
 		return $this;
 	}
 	
-	public function apply($in=null)
+	public function apply($in)
 	{
 		global $__dfm;
 		$out = $in;
@@ -107,6 +107,44 @@ class dfm
 					break;
 				case 'subtract':
 					$out -= $action[1];
+					break;
+				case 'build_epoch':
+					$months = array(
+						'jan'=>1,
+						'january'=>1,
+						'feb'=>2,
+						'february'=>2,
+						'mar'=>3,
+						'march'=>3,
+						'apr'=>4,
+						'april'=>4,
+						'may'=>5,
+						'may'=>5,
+						'jun'=>6,
+						'june'=>6,
+						'jul'=>7,
+						'july'=>7,
+						'aug'=>8,
+						'august'=>8,
+						'sep'=>9,
+						'september'=>9,
+						'oct'=>10,
+						'october'=>10,
+						'nov'=>11,
+						'november'=>11,
+						'dec'=>12,
+						'december'=>12,
+					);
+					if(array_key_exists($months[strtolower($action[1])]))
+					{
+						$action[1] = $months[strtolower($action[1])];
+					}
+					$action[1] = intval($action[1]);
+					$action[2] = intval($action[2]);
+					$action[3] = intval($action[3]+1);
+					
+					$out = gmmktime(0,0,0,$action[1],$action[2],$action[3]);
+					
 					break;
 				case 'epoch':
 					$out = date($action[1],$out);
