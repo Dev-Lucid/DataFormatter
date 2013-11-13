@@ -87,6 +87,10 @@ class dfm
 			dfm::log('applying '.$action[0].' to '.$out);
 			switch($action[0])
 			{
+				case 'price':
+					
+					$out = '$'.number_format($out,2);
+					break;
 				case 'ifnull':
 					$out = (is_null($out))?$action[1]:$out;
 					break;
